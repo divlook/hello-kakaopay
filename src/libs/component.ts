@@ -39,8 +39,8 @@ export abstract class Component<Props = KeyValue> {
      * Render
      *
      * - 템플릿 루트는 반드시 하나의 요소로 이루어져 있어야함.
-     * - 템플릿 루트는 반드시 `id=${this.uid}` 속성을 포함해야함.
-     *   - `<div id=${this.uid}>...</div>`
+     * - 템플릿 루트는 반드시 `id="${this.uid}"` 속성을 포함해야함.
+     *   - `<div id="${this.uid}">...</div>`
      */
     public abstract render(): string
 

@@ -18,7 +18,7 @@ export class Text extends Component<Props> {
     render() {
         this.setValue(this.props.value)
 
-        return `<i id=${this.uid}>${this.value}</i>`
+        return `<i id="${this.uid}">${this.value}</i>`
     }
 
     public setValue(nextValue: string | number) {
