@@ -1,18 +1,93 @@
-@keyframes test {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(10%);
-    }
+$color-gorse: #ffeb3b;
+$color-roman-coffee: #795548;
+$color-black: #000;
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    color: $color-black;
+    font-family: sans-serif;
 }
 
-// 주석
-#app {
-    /* 주석 */
-    color: red;
+h1 {
+    font-size: 1.5rem;
+}
 
-    div {
-        animation: test 1s;
+h2 {
+    font-size: 1.3rem;
+}
+
+h3 {
+    font-size: 1.1rem;
+}
+
+i {
+    font-style: normal !important;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .page {
+        min-width: 300px;
+        min-height: 300px;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            h2 {
+                margin: 0 auto;
+            }
+        }
+
+        .notice {
+            text-align: center;
+
+        }
+
+        .input {
+            display: flex;
+            justify-content: center;
+            input {
+                display: block;
+                width: 80%;
+                margin: 0;
+                padding: 0.5em 0.75em;
+                background: $color-gorse;
+                border: 1px solid $color-roman-coffee;
+                border-radius: 10px;
+                outline: 0;
+                font-size: 1.2em;
+                text-align: center;
+            }
+        }
+
+        .action {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            button {
+                display: block;
+                min-width: 80px;
+                background: $color-gorse;
+                padding: 0.5em 0.75em;
+                border: 0;
+                border-radius: 4px;
+                font-size: 1.2em;
+                line-height: 1;
+                text-align: center;
+                outline: 0;
+                box-shadow: 0 4px 12px rgba($color: $color-black, $alpha: 0.2);
+                cursor: pointer;
+            }
+        }
     }
 }
