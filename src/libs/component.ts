@@ -4,20 +4,34 @@ export interface KeyValue {
     [key: string]: any
 }
 
+export type Childs = {
+    [key: string]: Component
+}
+
 export abstract class Component<Props = KeyValue> {
     static defaultProps = {}
 
     #uid: string
-    #target: HTMLElement | null = null
-    #targetHTML = ''
+    #mountedCallback = () => {}
     #beforeUnmountCallback = () => {}
     #el: HTMLElement | null = null
     #props = {} as Props
     #mounted = false
 
+    parent!: Component
+    childs: Childs = {}
+
     constructor(props?: Props) {
+        // uid 생성
         this.#uid = genUid()
+
+        // props 할당
         Object.assign(this.#props, Component.defaultProps, props || {})
+
+        // 등록된 자식 컴포넌트에 부모 연결
+        Object.keys(this.childs).forEach((key) => {
+            this.childs[key].parent = this
+        })
     }
 
     protected get uid() {
@@ -48,18 +62,21 @@ export abstract class Component<Props = KeyValue> {
         if (!target) {
             throw new Error('target이 없습니다.')
         }
-        this.#target = target
-        this.#targetHTML = target.innerHTML
-        this.#target.innerHTML = this.render()
+
+        if (this.#mounted) {
+            console.log('mount가 이미 실행됨')
+            return
+        }
+
+        this.#mounted = true
+        target.insertAdjacentHTML('beforeend', this.render())
+        this.runCallbackWithChilds('mounted', this.childs)
     }
 
     public unmount(): void {
         this.#mounted = false
-        this.#beforeUnmountCallback?.()
-        this.#beforeUnmountCallback = () => {}
-        if (this.#target) {
-            this.#target.innerHTML = this.#targetHTML
-        }
+        this.runCallbackWithChilds('beforeUnmount', this.childs)
+        this.el?.remove()
     }
 
     /**
@@ -69,10 +86,7 @@ export abstract class Component<Props = KeyValue> {
      * - render 메서드 안에서 호출해야함.
      */
     public onMounted(cb: () => void) {
-        if (!this.#mounted) {
-            this.#mounted = true
-            cb?.()
-        }
+        this.#mountedCallback = cb
     }
 
     /**
@@ -83,6 +97,41 @@ export abstract class Component<Props = KeyValue> {
      */
     public onBeforeUnmount(cb: () => void) {
         this.#beforeUnmountCallback = cb
+    }
+
+    private runCallbackWithChilds(
+        type: 'mounted' | 'beforeUnmount',
+        childs?: Childs
+    ) {
+        if (childs) {
+            Object.keys(childs).forEach((key) => {
+                const child = childs[key]
+                this.runCallbackWithChilds(type, child.childs)
+
+                switch (type) {
+                    case 'mounted':
+                        child.#mountedCallback?.()
+                        break
+
+                    case 'beforeUnmount':
+                        child.#beforeUnmountCallback?.()
+                        break
+                }
+            })
+            return
+        }
+
+        this.runCallbackWithChilds(type, this.childs)
+
+        switch (type) {
+            case 'mounted':
+                this.#mountedCallback?.()
+                break
+
+            case 'beforeUnmount':
+                this.#beforeUnmountCallback?.()
+                break
+        }
     }
 }
 
