@@ -28,6 +28,10 @@ i {
     font-style: normal !important;
 }
 
+*[hidden] {
+    display: none;
+}
+
 #app {
     width: 100%;
     height: 100%;
