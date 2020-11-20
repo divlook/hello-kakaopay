@@ -17,6 +17,7 @@ export abstract class Component<Props = KeyValue> {
     #el: HTMLElement | null = null
     #props = {} as Props
     #isMounted = false
+    #isHidden = false
 
     parent!: Component
     childs: Childs = {}
@@ -51,6 +52,10 @@ export abstract class Component<Props = KeyValue> {
 
     get isMounted() {
         return this.#isMounted
+    }
+
+    get isHidden() {
+        return this.#isHidden
     }
 
     /**
@@ -101,6 +106,20 @@ export abstract class Component<Props = KeyValue> {
      */
     onBeforeUnmount(cb: () => void) {
         this.#beforeUnmountCallback = cb
+    }
+
+    show() {
+        if (this.el) {
+            this.el.hidden = false
+            this.#isHidden = false
+        }
+    }
+
+    hide() {
+        if (this.el) {
+            this.el.hidden = true
+            this.#isHidden = true
+        }
     }
 
     private runCallbackWithChilds(
