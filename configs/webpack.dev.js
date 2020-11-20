@@ -10,6 +10,7 @@ const config = {
         port: 3000,
         hot: true,
         open: true,
+        historyApiFallback: true,
         stats: 'minimal',
     },
     module: {
