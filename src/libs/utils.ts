@@ -27,3 +27,45 @@ export const useLocalCache = <Data>(key: string, active = false) => {
         },
     }
 }
+
+/**
+ * Debounce
+ *
+ * @param ms 기본값: 300
+ */
+export const debounce = (cb: () => void, ms = 300) => {
+    let handel: any
+    return () => {
+        clearTimeout(handel)
+        handel = setTimeout(cb, ms)
+    }
+}
+
+/**
+ * Timer
+ *
+ * @param ms 기본값: 1000
+ */
+export const timer = (cb: (count: number) => void, ms = 1000) => {
+    let handel: any
+
+    return {
+        start,
+        stop,
+    }
+
+    function start(count: number) {
+        stop()
+        cb(count)
+
+        if (--count >= 0) {
+            handel = setTimeout(() => {
+                start(count)
+            }, ms)
+        }
+    }
+
+    function stop() {
+        clearTimeout(handel)
+    }
+}
