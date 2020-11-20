@@ -38,14 +38,14 @@ export abstract class Component<Props = KeyValue> {
         return this.#uid
     }
 
-    public get el() {
+    get el() {
         if (!this.#el) {
             this.#el = document.getElementById(this.#uid)
         }
         return this.#el
     }
 
-    public get props() {
+    get props() {
         return this.#props
     }
 
@@ -56,9 +56,9 @@ export abstract class Component<Props = KeyValue> {
      * - 템플릿 루트는 반드시 `id="${this.uid}"` 속성을 포함해야함.
      *   - `<div id="${this.uid}">...</div>`
      */
-    public abstract render(): string
+    abstract render(): string
 
-    public mount(target: HTMLElement | null) {
+    mount(target: HTMLElement | null) {
         if (!target) {
             throw new Error('target이 없습니다.')
         }
@@ -73,8 +73,8 @@ export abstract class Component<Props = KeyValue> {
         this.runCallbackWithChilds('mounted', this.childs)
     }
 
-    public unmount(): void {
-        this.#mounted = false
+    unmount(): void {
+        this.#isMounted = false
         this.runCallbackWithChilds('beforeUnmount', this.childs)
         this.el?.remove()
     }
@@ -85,7 +85,7 @@ export abstract class Component<Props = KeyValue> {
      * - 첫번째 렌더링에서만 실행됨.
      * - render 메서드 안에서 호출해야함.
      */
-    public onMounted(cb: () => void) {
+    onMounted(cb: () => void) {
         this.#mountedCallback = cb
     }
 
@@ -95,7 +95,7 @@ export abstract class Component<Props = KeyValue> {
      * unmount 메서드를 사용했을 때 실행됨.
      * render 메서드 안에서 호출해야함.
      */
-    public onBeforeUnmount(cb: () => void) {
+    onBeforeUnmount(cb: () => void) {
         this.#beforeUnmountCallback = cb
     }
 
