@@ -2,11 +2,13 @@ import { Component } from '~/libs/component'
 
 export interface Props {
     value: string | number
+    tag?: string
 }
 
 export class Text extends Component<Props> {
     static defaultProps = {
         value: '',
+        tag: 'i',
     }
 
     #value = ''
@@ -16,9 +18,11 @@ export class Text extends Component<Props> {
     }
 
     render() {
+        const { tag } = this.props
+
         this.setValue(this.props.value)
 
-        return `<i id="${this.uid}">${this.value}</i>`
+        return `<${tag} id="${this.uid}">${this.value}</${tag}>`
     }
 
     public setValue(nextValue: string | number) {
