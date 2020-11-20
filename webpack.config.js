@@ -49,14 +49,6 @@ const config = {
     },
     plugins: [
         new webpack.EnvironmentPlugin(['TITLE', 'PUBLIC_PATH']),
-        new HtmlWebpackPlugin({
-            template: 'src/views/index.ejs',
-            filename: 'index.html',
-            templateParameters: {
-                TITLE: process.env.TITLE,
-                PUBLIC_PATH: process.env.PUBLIC_PATH,
-            },
-        }),
         new ForkTsCheckerWebpackPlugin({
             eslint: {
                 files: './src/**/*.{js,ts}',
@@ -66,11 +58,40 @@ const config = {
     stats: 'minimal',
 }
 
+/**
+ * Html webpack plugin
+ *
+ * @param { 'development' | 'production' } mode
+ */
+function useMultiHtmlWebpackPlugin(mode) {
+    const filenames = ['index.html']
+    const PUBLIC_PATH = process.env.PUBLIC_PATH
+
+    if (mode === 'production') {
+        filenames.push('complete/index.html')
+    }
+
+    config.plugins = config.plugins.concat(
+        filenames.map((filename) => {
+            return new HtmlWebpackPlugin({
+                template: 'src/views/index.ejs',
+                filename,
+                templateParameters: {
+                    TITLE: process.env.TITLE,
+                    PUBLIC_PATH,
+                },
+            })
+        })
+    )
+}
+
 module.exports = (env, argv) => {
     /**
      * @type { 'development' | 'production' }
      */
     const mode = argv.mode
+
+    useMultiHtmlWebpackPlugin(mode)
 
     switch (mode) {
         case 'development':
