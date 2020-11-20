@@ -16,7 +16,7 @@ export abstract class Component<Props = KeyValue> {
     #beforeUnmountCallback = () => {}
     #el: HTMLElement | null = null
     #props = {} as Props
-    #mounted = false
+    #isMounted = false
 
     parent!: Component
     childs: Childs = {}
@@ -49,6 +49,10 @@ export abstract class Component<Props = KeyValue> {
         return this.#props
     }
 
+    get isMounted() {
+        return this.#isMounted
+    }
+
     /**
      * Render
      *
@@ -63,12 +67,12 @@ export abstract class Component<Props = KeyValue> {
             throw new Error('target이 없습니다.')
         }
 
-        if (this.#mounted) {
+        if (this.#isMounted) {
             console.log('mount가 이미 실행됨')
             return
         }
 
-        this.#mounted = true
+        this.#isMounted = true
         target.insertAdjacentHTML('beforeend', this.render())
         this.runCallbackWithChilds('mounted', this.childs)
     }
