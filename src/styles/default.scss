@@ -1,6 +1,7 @@
 $color-gorse: #ffeb3b;
 $color-roman-coffee: #795548;
 $color-black: #000;
+$color-alto: #e0e0e0;
 
 html,
 body {
@@ -71,6 +72,9 @@ i {
                 outline: 0;
                 font-size: 1.2em;
                 text-align: center;
+                &:disabled {
+                    background: $color-alto;
+                }
             }
         }
 
