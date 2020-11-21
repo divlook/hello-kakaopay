@@ -10,7 +10,7 @@ const isProd = process.env.NODE_ENV === 'production'
 // prettier-ignore
 export const apiUrl = 'https://my-json-server.typicode.com/kakaopay-fe/resources/words'
 
-export const getWordsApi = () => {
+export const getWordsApi = async () => {
     const cache = useLocalCache<Word[]>('get-words-api', !isProd)
 
     if (cache.check()) {
