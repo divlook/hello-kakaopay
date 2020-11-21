@@ -17,6 +17,7 @@ export interface LocalCache<Data = any> {
  */
 export const useLocalCache = <Data>(key: string, ttl = 1) => {
     let cache: LocalCache<Data> | null
+    let checked = false
 
     if (!key) {
         throw new Error('LocalCache를 사용하기 위해서는 key가 필요합니다.')
@@ -29,6 +30,7 @@ export const useLocalCache = <Data>(key: string, ttl = 1) => {
     return {
         check() {
             const row = localStorage.getItem(key)
+            checked = true
 
             if (!row) {
                 return false
@@ -58,6 +60,13 @@ export const useLocalCache = <Data>(key: string, ttl = 1) => {
         },
         get() {
             console.log(`cache[${key}]가 사용되었습니다.`)
+
+            if (!checked) {
+                this.check()
+            }
+
+            checked = false
+
             return cache ? cache.data : null
         },
         set(nextData: Data) {
