@@ -96,7 +96,7 @@ export const getGameData = () => {
         const data = localStorage.getItem(key)
 
         if (!data) {
-            throw new Error('데이터가 없습니다.')
+            return null
         }
 
         const json = JSON.parse(data)
