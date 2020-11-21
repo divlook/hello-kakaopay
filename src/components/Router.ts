@@ -1,6 +1,7 @@
 import { Component } from '~/libs/component'
 
 export interface Route {
+    /** path는 항상 '/'로 시작해야합니다. */
     path: string
     component: Component
 }
@@ -17,6 +18,7 @@ export interface Props {
 
 export interface Context {
     router: Router
+    /** path는 항상 '/'로 시작해야합니다. */
     push: (path: string) => void
     back: () => void
 }
@@ -75,13 +77,17 @@ export class Router extends Component<Props> {
             throw new Error('유효하지 않은 path입니다.')
         }
 
+        if (!/^\//.test(path)) {
+            throw new Error(`path는 항상 '/'로 시작해야합니다.`)
+        }
+
         if (this.currentRoute) {
             this.#history.push(this.currentRoute)
         }
 
         const nextRoute = this.match(path)
         const nextState = this.routeToState(nextRoute)
-        const nextPath = this.toPublicPath(path)
+        const nextPath = this.joinPublicPath(path)
 
         history.pushState(nextState, document.title, nextPath)
 
@@ -92,8 +98,16 @@ export class Router extends Component<Props> {
         history.back()
     }
 
-    toPublicPath(path: string) {
-        return `${this.publicPath}${path.replace(/^\//, '')}`
+    joinPublicPath(path: string) {
+        if (this.publicPath === '/') {
+            return path
+        }
+
+        if (this.publicPath === '') {
+            return path.replace(/^\//, '')
+        }
+
+        return `${this.publicPath.replace(/\/$/, '')}${path}`
     }
 
     private init(initRoute: Route) {
