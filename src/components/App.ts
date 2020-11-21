@@ -5,7 +5,13 @@ import { Complete } from '~/components/pages/Complete'
 
 export class App extends Component {
     childs = {
-        router: new Router({
+        router: new Router(),
+    }
+
+    render() {
+        const { router } = this.childs
+
+        router.setProps({
             routes: [
                 {
                     path: '/',
@@ -17,11 +23,7 @@ export class App extends Component {
                 },
             ],
             fallback: '/',
-        }),
-    }
-
-    render() {
-        const { router } = this.childs
+        })
 
         return `
             <div id="${this.uid}">

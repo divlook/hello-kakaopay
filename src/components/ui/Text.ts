@@ -25,7 +25,7 @@ export class Text extends Component<Props> {
         return `<${tag} id="${this.uid}">${this.value}</${tag}>`
     }
 
-    public setValue(nextValue: string | number) {
+    setValue(nextValue: string | number) {
         const value = String(nextValue)
         this.#value = value
 

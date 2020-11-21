@@ -12,23 +12,25 @@ export class Button extends Component<Props> {
         disabled: false,
     }
 
-    #text = ''
+    #text = this.defaultProps.text
 
     get text() {
         return this.#text
     }
 
     render() {
-        this.setText(this.props.text)
-
+        const scope = this
         const disabled = this.props.disabled
 
+        this.setText(this.props.text)
+
         this.onMounted(() => {
-            this.el?.addEventListener('click', this.onClick)
+            this.el?.addEventListener('click', onClick)
         })
 
         this.onBeforeUnmount(() => {
-            this.el?.removeEventListener('click', this.onClick)
+            this.el?.removeEventListener('click', onClick)
+            this.#text = this.defaultProps.text
         })
 
         return `
@@ -40,6 +42,10 @@ export class Button extends Component<Props> {
                 ${this.text}
             </button>
         `
+
+        function onClick(e: MouseEvent) {
+            scope.props.onClick?.(e)
+        }
     }
 
     setText(nextValue: string) {
@@ -55,10 +61,6 @@ export class Button extends Component<Props> {
         if (el) {
             el.disabled = disabled
         }
-    }
-
-    private onClick = (e: MouseEvent) => {
-        this.props.onClick?.(e)
     }
 }
 

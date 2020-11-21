@@ -55,9 +55,9 @@ export class Router extends Component<Props> {
     }
 
     render() {
-        if (!this.props.routes || this.props.routes.length === 0) {
-            throw new Error('routes가 필요합니다.')
-        }
+        const scope = this
+
+        validateProps()
 
         this.#routes = this.props.routes
         this.#fallback = this.props.fallback || '/'
@@ -65,11 +65,38 @@ export class Router extends Component<Props> {
         this.onMounted(() => {
             const currentPath = location.pathname
             const currentRoute = this.match(currentPath)
-            this.init(currentRoute)
+
+            init(currentRoute)
             this.mountMatchedComponent(currentRoute)
         })
 
         return `<div id="${this.uid}"></div>`
+
+        function init(initRoute: Route) {
+            history.replaceState(scope.routeToState(initRoute), document.title)
+
+            window.addEventListener('popstate', (e) => {
+                const historyState: HistoryState = e.state
+                const path = historyState?.path ?? scope.fallback
+                const route = scope.match(path)
+
+                const lastRoute = scope.#history[scope.#history.length - 1]
+
+                if (lastRoute && lastRoute.path === route.path) {
+                    scope.#history.pop()
+                } else {
+                    scope.#history.push(route)
+                }
+
+                scope.mountMatchedComponent(route)
+            })
+        }
+
+        function validateProps() {
+            if (!scope.props.routes || scope.props.routes.length === 0) {
+                throw new Error('routes가 필요합니다.')
+            }
+        }
     }
 
     push(path: string) {
@@ -110,24 +137,11 @@ export class Router extends Component<Props> {
         return `${this.publicPath.replace(/\/$/, '')}${path}`
     }
 
-    private init(initRoute: Route) {
-        history.replaceState(this.routeToState(initRoute), document.title)
-
-        window.addEventListener('popstate', (e) => {
-            const historyState: HistoryState = e.state
-            const path = historyState?.path ?? this.fallback
-            const route = this.match(path)
-
-            const lastRoute = this.#history[this.#history.length - 1]
-
-            if (lastRoute && lastRoute.path === route.path) {
-                this.#history.pop()
-            } else {
-                this.#history.push(route)
-            }
-
-            this.mountMatchedComponent(route)
-        })
+    routeToState(route: Route): HistoryState {
+        return {
+            uid: route.component.uid,
+            path: route.path,
+        }
     }
 
     private mountMatchedComponent(pathOrRoute: string | Route) {
@@ -167,13 +181,6 @@ export class Router extends Component<Props> {
         }
 
         return this.match(this.fallback)
-    }
-
-    private routeToState(route: Route): HistoryState {
-        return {
-            uid: route.component.uid,
-            path: route.path,
-        }
     }
 }
 
