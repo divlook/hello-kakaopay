@@ -5,16 +5,14 @@ export interface Word {
     text: string
 }
 
-const isProd = process.env.NODE_ENV === 'production'
-
 // prettier-ignore
 export const apiUrl = 'https://my-json-server.typicode.com/kakaopay-fe/resources/words'
 
 export const getWordsApi = async () => {
-    const cache = useLocalCache<Word[]>('get-words-api', !isProd)
+    const cache = useLocalCache<Word[]>('get-words-api')
 
     if (cache.check()) {
-        return cache.get()
+        return cache.get() as Word[]
     }
 
     return fetch(apiUrl)

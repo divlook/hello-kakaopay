@@ -1,28 +1,73 @@
-export const useLocalCache = <Data>(key: string, active = false) => {
-    let data: Data
+export interface LocalCache<Data = any> {
+    data: Data
+    /**
+     * 만료시간
+     * - 단위 : ms
+     */
+    expires: number
+}
+
+/**
+ * Local cache
+ *
+ * @param ttl 캐시를 유지시킬 시간
+ * - 단위 : 초
+ * - 기본값 : 1
+ * - 최소값 : 1
+ */
+export const useLocalCache = <Data>(key: string, ttl = 1) => {
+    let cache: LocalCache<Data> | null
+
+    if (!key) {
+        throw new Error('LocalCache를 사용하기 위해서는 key가 필요합니다.')
+    }
+
+    if (ttl < 1) {
+        throw new Error('ttl 최소값은 1초입니다.')
+    }
 
     return {
         check() {
-            if (active) {
-                const row = localStorage.getItem(key)
-                if (row) {
-                    try {
-                        data = JSON.parse(row)
-                        return true
-                    } catch {
-                        return false
-                    }
-                }
+            const row = localStorage.getItem(key)
+
+            if (!row) {
+                return false
             }
-            return false
+
+            try {
+                const json: typeof cache = JSON.parse(row)
+                const data = json?.data
+                const expires = json?.expires ?? 0
+
+                if (!data) {
+                    localStorage.removeItem(key)
+                    return false
+                }
+
+                if (expires < Date.now()) {
+                    localStorage.removeItem(key)
+                    return false
+                }
+
+                cache = json
+
+                return true
+            } catch {
+                return false
+            }
         },
         get() {
             console.log(`cache[${key}]가 사용되었습니다.`)
-            return data
+            return cache ? cache.data : null
         },
         set(nextData: Data) {
-            if (active && nextData) {
-                localStorage.setItem(key, JSON.stringify(nextData))
+            if (nextData) {
+                const ms = ttl * 1000
+                const nextCache: LocalCache<Data> = {
+                    data: nextData,
+                    expires: Date.now() + ms,
+                }
+                localStorage.setItem(key, JSON.stringify(nextCache))
             }
         },
     }
