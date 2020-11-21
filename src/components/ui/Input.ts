@@ -13,7 +13,7 @@ export interface Props {
 const allowedTypes = new Set(['text', 'number'])
 
 export class Input extends Component<Props> {
-    static defaultProps = {
+    defaultProps = {
         type: 'text',
         placeholder: '',
         value: '',
@@ -41,7 +41,7 @@ export class Input extends Component<Props> {
         this.setPlaceholder(this.props.placeholder)
         this.setValue(this.props.value)
 
-        const disabled = this.props.disabled ?? Input.defaultProps.disabled
+        const disabled = this.props.disabled
 
         this.onMounted(() => {
             this.el?.addEventListener('input', this.onInput)
@@ -68,7 +68,7 @@ export class Input extends Component<Props> {
             throw new Error('허용되지 않은 type')
         }
 
-        this.#type = nextType || Input.defaultProps.type
+        this.#type = nextType || this.defaultProps.type
 
         if (this.el) {
             this.el.setAttribute('type', this.#type)

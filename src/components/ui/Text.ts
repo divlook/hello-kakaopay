@@ -6,7 +6,7 @@ export interface Props {
 }
 
 export class Text extends Component<Props> {
-    static defaultProps = {
+    defaultProps = {
         value: '',
         tag: 'i',
     }

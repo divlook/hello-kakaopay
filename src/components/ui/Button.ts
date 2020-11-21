@@ -6,7 +6,7 @@ export interface Props {
 }
 
 export class Button extends Component<Props> {
-    static defaultProps = {
+    defaultProps = {
         text: '버튼',
     }
 

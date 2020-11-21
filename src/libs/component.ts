@@ -9,8 +9,6 @@ export type Childs = {
 }
 
 export abstract class Component<Props = KeyValue> {
-    static defaultProps = {}
-
     #uid: string
     #mountedCallback = () => {}
     #beforeUnmountCallback = () => {}
@@ -19,6 +17,7 @@ export abstract class Component<Props = KeyValue> {
     #isMounted = false
     #isHidden = false
 
+    defaultProps = {}
     parent!: Component
     childs: Childs = {}
 
@@ -123,7 +122,7 @@ export abstract class Component<Props = KeyValue> {
 
     setProps(props: Props = {} as Props) {
         this.#props = {
-            ...Component.defaultProps,
+            ...this.defaultProps,
             ...this.#props,
             ...props,
         }
