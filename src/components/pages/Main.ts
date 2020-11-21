@@ -176,9 +176,9 @@ export class Main extends Component {
                 return
             }
 
-            gameTimer.stop()
             saveGameData(scope.#result)
             ctx.push('/complete')
+            resetGame()
         }
 
         function submitWord() {
