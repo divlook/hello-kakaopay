@@ -1,4 +1,4 @@
-export const pleaseEnter = '위의 단어를 입력한 뒤 Enter!!!'
+export const pleaseEnter = '위의 단어를 입력한 뒤 Enter 또는 제출!!!'
 export const pleaseEnterAWord = '단어를 입력해주세요.'
 export const wrong = '땡~! 틀렸습니다.'
 export const theTimeHasExpired = '시간이 초과하였습니다.'
