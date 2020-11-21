@@ -1,19 +1,31 @@
 import { Component } from '~/libs/component'
+import { Router } from '~/components/Router'
 import { Main } from '~/components/pages/Main'
-// import { Complete } from '~/components/pages/Complete'
+import { Complete } from '~/components/pages/Complete'
 
 export class App extends Component {
     childs = {
-        main: new Main(),
-        // complete: new Complete(),
+        router: new Router({
+            routes: [
+                {
+                    path: '/',
+                    component: new Main(),
+                },
+                {
+                    path: '/complete',
+                    component: new Complete(),
+                },
+            ],
+            fallback: '/',
+        }),
     }
 
     render() {
-        const { main } = this.childs
+        const { router } = this.childs
 
         return `
             <div id="${this.uid}">
-                ${main.render()}
+                ${router.render()}
             </div>
         `
     }
