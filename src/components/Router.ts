@@ -40,6 +40,10 @@ export class Router extends Component<Props> {
         return this.#fallback
     }
 
+    get publicPath() {
+        return process.env.PUBLIC_PATH
+    }
+
     get context(): Context {
         return {
             router: this,
@@ -76,13 +80,20 @@ export class Router extends Component<Props> {
         }
 
         const nextRoute = this.match(path)
-        history.pushState(this.routeToState(nextRoute), document.title, path)
+        const nextState = this.routeToState(nextRoute)
+        const nextPath = this.toPublicPath(path)
+
+        history.pushState(nextState, document.title, nextPath)
 
         this.mountMatchedComponent(path)
     }
 
     back() {
         history.back()
+    }
+
+    toPublicPath(path: string) {
+        return `${this.publicPath}${path.replace(/^\//, '')}`
     }
 
     private init(initRoute: Route) {
