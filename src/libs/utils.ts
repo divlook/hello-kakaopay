@@ -69,3 +69,58 @@ export const timer = (cb: (count: number) => void, ms = 1000) => {
         clearTimeout(handel)
     }
 }
+
+export interface GameData {
+    playtime: number
+    score: number
+}
+
+export const saveGameData = (data: GameData) => {
+    const key = 'gamedata'
+    const { playtime, score } = data
+
+    if (!playtime || typeof playtime !== 'number') {
+        throw new Error('유효한 데이터가 아닙니다. (playtime)')
+    }
+
+    if (!score || typeof score !== 'number') {
+        throw new Error('유효한 데이터가 아닙니다. (number)')
+    }
+
+    localStorage.setItem(key, JSON.stringify(data))
+}
+
+export const getGameData = () => {
+    try {
+        const key = 'gamedata'
+        const data = localStorage.getItem(key)
+
+        if (!data) {
+            throw new Error('데이터가 없습니다.')
+        }
+
+        const json = JSON.parse(data)
+        const { playtime, score } = json
+
+        if (!playtime || typeof playtime !== 'number') {
+            throw new Error('유효한 데이터가 아닙니다. (playtime)')
+        }
+
+        if (!score || typeof score !== 'number') {
+            throw new Error('유효한 데이터가 아닙니다. (score)')
+        }
+
+        return {
+            playtime,
+            score,
+        }
+    } catch (error) {
+        console.error(error)
+        return null
+    }
+}
+
+export const removeGameData = () => {
+    const key = 'gamedata'
+    localStorage.removeItem(key)
+}
