@@ -16,7 +16,11 @@ jobs:
       - name: Install
         run: npm install
 
+      - name: Test
+        run: npm run test
+
       - name: Build
+        if: success()
         run: npm run build.ghpages
 
       - name: Deploy to GitHub Pages
