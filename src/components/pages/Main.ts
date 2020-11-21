@@ -113,8 +113,10 @@ export class Main extends Component {
         async function playGameCallback() {
             const { score, button, input } = scope.childs
 
+            button.disable()
             scope.#isPlaying = true
             scope.#words = await getWordsApi()
+            button.disable(false)
 
             scope.#result.playtime = 0
             scope.#result.score = scope.#words.length
