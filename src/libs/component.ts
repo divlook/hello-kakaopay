@@ -21,12 +21,9 @@ export abstract class Component<Props = KeyValue> {
     parent!: Component
     childs: Childs = {}
 
-    constructor(props?: Props) {
+    constructor() {
         // uid 생성
         this.#uid = genUid()
-
-        // props 할당
-        this.setProps(props)
 
         // 등록된 자식 컴포넌트에 부모 연결
         Object.keys(this.childs).forEach((key) => {
