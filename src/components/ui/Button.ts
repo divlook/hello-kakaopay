@@ -2,14 +2,18 @@ import { Component } from '~/libs/component'
 
 export interface Props {
     text: string
+    type?: 'button' | 'submit'
     disabled?: boolean
+    hidden?: boolean
     onClick?: (e: MouseEvent) => void
 }
 
 export class Button extends Component<Props> {
     defaultProps = {
         text: '버튼',
+        type: 'button',
         disabled: false,
+        hidden: false,
     }
 
     #text = this.defaultProps.text
@@ -18,9 +22,13 @@ export class Button extends Component<Props> {
         return this.#text
     }
 
+    get type() {
+        return this.props.type
+    }
+
     render() {
         const scope = this
-        const disabled = this.props.disabled
+        const { disabled, hidden } = this.props
 
         this.setText(this.props.text)
 
@@ -36,8 +44,9 @@ export class Button extends Component<Props> {
         return `
             <button
                 id="${this.uid}"
-                type="button"
+                type="${this.type}"
                 ${disabled ? 'disabled' : ''}
+                ${hidden ? 'hidden' : ''}
             >
                 ${this.text}
             </button>

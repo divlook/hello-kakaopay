@@ -3,12 +3,14 @@ import { Component } from '~/libs/component'
 export interface Props {
     value: string | number
     tag?: string
+    hidden?: boolean
 }
 
 export class Text extends Component<Props> {
     defaultProps = {
         value: '',
         tag: 'i',
+        hidden: false,
     }
 
     #value = ''
@@ -18,11 +20,18 @@ export class Text extends Component<Props> {
     }
 
     render() {
-        const { tag } = this.props
+        const { tag, hidden } = this.props
 
         this.setValue(this.props.value)
 
-        return `<${tag} id="${this.uid}">${this.value}</${tag}>`
+        return `
+            <${tag}
+                id="${this.uid}"
+                ${hidden ? 'hidden' : ''}
+            >
+                ${this.value}
+            </${tag}>
+        `
     }
 
     setValue(nextValue: string | number) {
