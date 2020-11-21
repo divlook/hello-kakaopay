@@ -1,0 +1,5 @@
+export const pleaseEnter = '위의 단어를 입력한 뒤 Enter!!!'
+export const pleaseEnterAWord = '단어를 입력해주세요.'
+export const wrong = '땡~! 틀렸습니다.'
+export const theTimeHasExpired = '시간이 초과하였습니다.'
+export const importingData = '데이터 가져오는 중...'

@@ -5,6 +5,7 @@ import { Input } from '~/components/ui/Input'
 import { Context } from '~/components/Router'
 import { getWordsApi, Word } from '~/api/words'
 import { debounce, saveGameData, getGameData, timer } from '~/libs/utils'
+import * as msg from '~/libs/msg'
 
 export class Main extends Component {
     childs = {
@@ -56,7 +57,7 @@ export class Main extends Component {
             placeholder: '입력',
             disabled: true,
             onEnter: () => submitWord(),
-            onInput: () => setMessage(''),
+            onInput: () => setMessage(msg.pleaseEnter),
         })
 
         this.onMounted(() => {
@@ -114,9 +115,11 @@ export class Main extends Component {
             const { score, button, input } = scope.childs
 
             button.disable()
+            setMessage(msg.importingData)
             scope.#isPlaying = true
             scope.#words = await getWordsApi()
             button.disable(false)
+            setMessage()
 
             scope.#result.playtime = 0
             scope.#result.score = scope.#words.length
@@ -158,7 +161,7 @@ export class Main extends Component {
             }
 
             score.setValue(--scope.#result.score)
-            alert('시간이 초과하였습니다.')
+            alert(msg.theTimeHasExpired)
             nextWord()
         }
 
@@ -170,7 +173,7 @@ export class Main extends Component {
             if (currentWord) {
                 gameTimer.start(currentWord.second)
                 keyword.setValue(currentWord.text)
-                setMessage('')
+                setMessage(msg.pleaseEnter)
                 input.setValue('')
                 input.focus()
                 return
@@ -191,12 +194,12 @@ export class Main extends Component {
             }
 
             if (!input.value) {
-                setMessage('단어를 입력해주세요.')
+                setMessage(msg.pleaseEnterAWord)
                 return
             }
 
             if (input.value !== currentWord.text) {
-                setMessage('땡~! 틀렸습니다.')
+                setMessage(msg.wrong)
                 return
             }
 
