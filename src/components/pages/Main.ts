@@ -68,6 +68,10 @@ export class Main extends Component {
             message.hide()
         })
 
+        this.onBeforeUnmount(() => {
+            resetGame()
+        })
+
         return `
             <div id="${this.uid}" class="page">
                 <div class="header">
@@ -137,10 +141,12 @@ export class Main extends Component {
             scope.#isPlaying = false
             scope.#words = []
             scope.#wordIndex = -1
-            gameTimer.stop()
-            setMessage('')
+            scope.#remainSecond = 0
             scope.#result.playtime = 0
             scope.#result.score = 0
+
+            gameTimer.stop()
+            setMessage('')
 
             keyword.setValue('문제 단어')
             button.setText('시작')
@@ -181,7 +187,6 @@ export class Main extends Component {
 
             saveGameData(scope.#result)
             ctx.push('/complete')
-            resetGame()
         }
 
         function submitWord() {
