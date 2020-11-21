@@ -21,12 +21,9 @@ export abstract class Component<Props = KeyValue> {
     parent!: Component
     childs: Childs = {}
 
-    constructor(props?: Props) {
+    constructor() {
         // uid 생성
         this.#uid = genUid()
-
-        // props 할당
-        this.setProps(props)
 
         // 등록된 자식 컴포넌트에 부모 연결
         Object.keys(this.childs).forEach((key) => {
@@ -76,13 +73,11 @@ export abstract class Component<Props = KeyValue> {
             return
         }
 
-        this.#isMounted = true
         target.insertAdjacentHTML('beforeend', this.render(ctx))
         this.runCallbackWithChilds('mount')
     }
 
     unmount(): void {
-        this.#isMounted = false
         this.runCallbackWithChilds('unmount')
     }
 
@@ -128,31 +123,15 @@ export abstract class Component<Props = KeyValue> {
         }
     }
 
-    private runCallbackWithChilds(type: 'mount' | 'unmount', childs?: Childs) {
-        if (childs) {
-            Object.keys(childs).forEach((key) => {
-                const child = childs[key]
-                this.runCallbackWithChilds(type, child.childs)
-
-                switch (type) {
-                    case 'mount':
-                        child.#mountedCallback?.()
-                        break
-
-                    case 'unmount':
-                        child.#beforeUnmountCallback?.()
-                        child.el?.remove()
-                        child.#el = null
-                        break
-                }
-            })
-            return
-        }
-
-        this.runCallbackWithChilds(type, this.childs)
+    private runCallbackWithChilds(type: 'mount' | 'unmount') {
+        Object.keys(this.childs).forEach((key) => {
+            const child = this.childs[key]
+            child.runCallbackWithChilds(type)
+        })
 
         switch (type) {
             case 'mount':
+                this.#isMounted = true
                 this.#mountedCallback?.()
                 break
 
@@ -160,6 +139,11 @@ export abstract class Component<Props = KeyValue> {
                 this.#beforeUnmountCallback?.()
                 this.el?.remove()
                 this.#el = null
+                this.#props = {} as Props
+                this.#isMounted = false
+                this.#isHidden = false
+                this.#mountedCallback = () => {}
+                this.#beforeUnmountCallback = () => {}
                 break
         }
     }

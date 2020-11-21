@@ -30,7 +30,7 @@ i {
 }
 
 *[hidden] {
-    display: none;
+    display: none !important;
 }
 
 #app {
@@ -84,8 +84,10 @@ i {
             button {
                 display: block;
                 min-width: 80px;
-                background: $color-gorse;
+                background: $color-roman-coffee;
+                color: $color-alto;
                 padding: 0.5em 0.75em;
+                margin-right: 20px;
                 border: 0;
                 border-radius: 4px;
                 font-size: 1.2em;
@@ -94,6 +96,15 @@ i {
                 outline: 0;
                 box-shadow: 0 4px 12px rgba($color: $color-black, $alpha: 0.2);
                 cursor: pointer;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+
+                &[type="submit"] {
+                    background: $color-gorse;
+                    color: $color-black;
+                }
             }
         }
     }

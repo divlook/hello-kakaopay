@@ -13,7 +13,8 @@ export class Main extends Component {
         message: new Text(),
         remainTime: new Text(),
         score: new Text(),
-        button: new Button(),
+        resetButton: new Button(),
+        submitButton: new Button(),
         input: new Input(),
     }
 
@@ -38,7 +39,8 @@ export class Main extends Component {
             message,
             remainTime,
             score,
-            button,
+            resetButton,
+            submitButton,
             input,
         } = this.childs
         const playGame = debounce(playGameCallback)
@@ -46,12 +48,18 @@ export class Main extends Component {
         const gameData = getGameData()
 
         keyword.setProps({ value: '문제 단어' })
-        message.setProps({ tag: 'h3', value: '' })
+        message.setProps({ tag: 'h3', value: '', hidden: true })
         remainTime.setProps({ value: 0 })
         score.setProps({ value: 0 })
-        button.setProps({
+        resetButton.setProps({
+            text: '초기화',
+            hidden: true,
+            onClick: () => onClickResetButton(),
+        })
+        submitButton.setProps({
             text: '시작',
-            onClick: () => onClickButton(),
+            type: 'submit',
+            onClick: () => onClickSubmitButton(),
         })
         input.setProps({
             placeholder: '입력',
@@ -65,7 +73,10 @@ export class Main extends Component {
                 ctx.push('/complete')
                 return
             }
-            message.hide()
+        })
+
+        this.onBeforeUnmount(() => {
+            resetGame()
         })
 
         return `
@@ -85,14 +96,19 @@ export class Main extends Component {
                 </div>
 
                 <div class="action">
-                    ${button.render()}
+                    ${resetButton.render()}
+                    ${submitButton.render()}
                 </div>
             </div>
         `
 
-        function onClickButton() {
+        function onClickResetButton() {
+            resetGame()
+        }
+
+        function onClickSubmitButton() {
             if (scope.#isPlaying) {
-                resetGame()
+                submitWord()
             } else {
                 playGame()
             }
@@ -112,19 +128,20 @@ export class Main extends Component {
         }
 
         async function playGameCallback() {
-            const { score, button, input } = scope.childs
+            const { score, submitButton, resetButton, input } = scope.childs
 
-            button.disable()
+            submitButton.disable()
             setMessage(msg.importingData)
             scope.#isPlaying = true
             scope.#words = await getWordsApi()
-            button.disable(false)
+            submitButton.disable(false)
             setMessage()
 
             scope.#result.playtime = 0
             scope.#result.score = scope.#words.length
 
-            button.setText('초기화')
+            resetButton.show()
+            submitButton.setText('제출')
             input.disable(false)
             score.setValue(scope.#result.score)
 
@@ -132,18 +149,28 @@ export class Main extends Component {
         }
 
         async function resetGame() {
-            const { keyword, remainTime, score, button, input } = scope.childs
+            const {
+                keyword,
+                remainTime,
+                score,
+                resetButton,
+                submitButton,
+                input,
+            } = scope.childs
 
             scope.#isPlaying = false
             scope.#words = []
             scope.#wordIndex = -1
-            gameTimer.stop()
-            setMessage('')
+            scope.#remainSecond = 0
             scope.#result.playtime = 0
             scope.#result.score = 0
 
+            gameTimer.stop()
+            setMessage('')
+
             keyword.setValue('문제 단어')
-            button.setText('시작')
+            resetButton.hide()
+            submitButton.setText('시작')
             remainTime.setValue(0)
             score.setValue(0)
             input.setValue('')
@@ -181,7 +208,6 @@ export class Main extends Component {
 
             saveGameData(scope.#result)
             ctx.push('/complete')
-            resetGame()
         }
 
         function submitWord() {
@@ -195,11 +221,13 @@ export class Main extends Component {
 
             if (!input.value) {
                 setMessage(msg.pleaseEnterAWord)
+                input.focus()
                 return
             }
 
             if (input.value !== currentWord.text) {
                 setMessage(msg.wrong)
+                input.focus()
                 return
             }
 

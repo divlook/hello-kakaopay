@@ -20,7 +20,7 @@ export class Input extends Component<Props> {
         disabled: false,
     }
 
-    #type = ''
+    #type = this.defaultProps.type
     #placeholder = ''
     #value = ''
 
@@ -37,20 +37,24 @@ export class Input extends Component<Props> {
     }
 
     render() {
+        const scope = this
+        const disabled = this.props.disabled
+
         this.setType(this.props.type)
         this.setPlaceholder(this.props.placeholder)
         this.setValue(this.props.value)
 
-        const disabled = this.props.disabled
-
         this.onMounted(() => {
-            this.el?.addEventListener('input', this.onInput)
-            this.el?.addEventListener('keypress', this.onKeypress)
+            this.el?.addEventListener('input', onInput)
+            this.el?.addEventListener('keypress', onKeypress)
         })
 
         this.onBeforeUnmount(() => {
-            this.el?.removeEventListener('input', this.onInput)
-            this.el?.removeEventListener('keypress', this.onKeypress)
+            this.el?.removeEventListener('input', onInput)
+            this.el?.removeEventListener('keypress', onKeypress)
+            this.#type = this.defaultProps.type
+            this.#placeholder = ''
+            this.#value = ''
         })
 
         return `
@@ -61,6 +65,20 @@ export class Input extends Component<Props> {
                 ${disabled ? 'disabled' : ''}
             />
         `
+
+        function onInput(e: Event) {
+            const el = scope.el as HTMLInputElement
+            scope.setValue(el.value, false)
+            scope.props.onInput?.(e as InputEvent)
+        }
+
+        function onKeypress(e: KeyboardEvent) {
+            const isEnter = e.code === 'Enter' || e.key === 'Enter'
+
+            if (isEnter) {
+                scope.props.onEnter?.()
+            }
+        }
     }
 
     setType(nextType?: 'text' | 'number') {
@@ -106,20 +124,6 @@ export class Input extends Component<Props> {
         const el = this.el as HTMLInputElement
         if (el) {
             el.disabled = disabled
-        }
-    }
-
-    private onInput = (e: Event) => {
-        const el = this.el as HTMLInputElement
-        this.setValue(el.value, false)
-        this.props.onInput?.(e as InputEvent)
-    }
-
-    private onKeypress = (e: KeyboardEvent) => {
-        const isEnter = e.code === 'Enter' || e.key === 'Enter'
-
-        if (isEnter) {
-            this.props.onEnter?.()
         }
     }
 }
