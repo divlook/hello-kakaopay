@@ -1,6 +1,5 @@
 {
     "presets": [
-        "@babel/preset-typescript",
         [
             "@babel/preset-env",
             {
@@ -10,6 +9,7 @@
                     "proposals": true
                 }
             }
-        ]
+        ],
+        "@babel/preset-typescript"
     ]
 }
