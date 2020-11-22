@@ -106,6 +106,10 @@ export abstract class Component<Props = KeyValue> {
         this.#beforeUnmountCallback = cb
     }
 
+    /**
+     * Show
+     * - mount된 후 사용 가능
+     */
     show() {
         if (this.el) {
             this.el.hidden = false
@@ -113,6 +117,10 @@ export abstract class Component<Props = KeyValue> {
         }
     }
 
+    /**
+     * Hide
+     * - mount된 후 사용 가능
+     */
     hide() {
         if (this.el) {
             this.el.hidden = true
