@@ -40,10 +40,11 @@ export abstract class Component<Props = KeyValue> {
     }
 
     get el() {
-        if (!this.#el) {
-            this.#el = document.getElementById(this.#uid)
+        if (this.#el) {
+            return this.#el
         }
-        return this.#el
+
+        return this.connectEl()
     }
 
     get props() {
@@ -127,6 +128,25 @@ export abstract class Component<Props = KeyValue> {
         }
     }
 
+    connectEl() {
+        this.#el = document.getElementById(this.#uid)
+
+        if (this.#el) {
+            return this.#el
+        }
+
+        if (this.#isMounted) {
+            let errorMsg = `#${this.#uid} Element를 찾을 수 없습니다.`
+            errorMsg += `\n|`
+            errorMsg += `\n| 루트 요소에 id 속성이 있는지 확인해주세요.`
+            errorMsg += `\n| render() { return '<div id="\${this.uid}">...</div>' }`
+            errorMsg += `\n|`
+            throw new Error(errorMsg)
+        }
+
+        return null
+    }
+
     private runCallbackWithChilds(type: 'mount' | 'unmount') {
         Object.keys(this.childs).forEach((key) => {
             const child = this.childs[key]
@@ -136,6 +156,7 @@ export abstract class Component<Props = KeyValue> {
         switch (type) {
             case 'mount':
                 this.#isMounted = true
+                this.connectEl()
                 this.#mountedCallback?.()
                 break
 
