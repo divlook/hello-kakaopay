@@ -18,6 +18,11 @@ export abstract class Component<Props = KeyValue> {
     #isHidden = false
 
     defaultProps = {}
+    /**
+     * 부모 컴포넌트
+     *
+     * parent 프로퍼티는 mount 실행 후 접근할 수 있습니다.
+     */
     parent!: Component
     childs: Childs = {}
 
@@ -28,11 +33,6 @@ export abstract class Component<Props = KeyValue> {
 
         // uid 생성
         this.#uid = genUid()
-
-        // 등록된 자식 컴포넌트에 부모 연결
-        Object.keys(this.childs).forEach((key) => {
-            this.childs[key].parent = this
-        })
     }
 
     get uid() {
@@ -148,6 +148,15 @@ export abstract class Component<Props = KeyValue> {
         return null
     }
 
+    /**
+     * 등록된 자식 컴포넌트에 부모 연결
+     */
+    connectParentToChilds() {
+        Object.keys(this.childs).forEach((key) => {
+            this.childs[key].parent = this
+        })
+    }
+
     private runCallbackWithChilds(type: 'mount' | 'unmount') {
         Object.keys(this.childs).forEach((key) => {
             const child = this.childs[key]
@@ -158,6 +167,7 @@ export abstract class Component<Props = KeyValue> {
             case 'mount':
                 this.#isMounted = true
                 this.connectEl()
+                this.connectParentToChilds()
                 this.#mountedCallback?.()
                 break
 
