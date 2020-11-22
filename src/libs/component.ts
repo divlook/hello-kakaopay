@@ -22,6 +22,10 @@ export abstract class Component<Props = KeyValue> {
     childs: Childs = {}
 
     constructor() {
+        if (typeof this.render !== 'function') {
+            throw new Error('추상 멤버 render를 구현하지 않았습니다.')
+        }
+
         // uid 생성
         this.#uid = genUid()
 
