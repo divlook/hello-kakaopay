@@ -135,12 +135,13 @@ export abstract class Component<Props = KeyValue> {
             return this.#el
         }
 
+        // prettier-ignore
         if (this.#isMounted) {
             let errorMsg = `#${this.#uid} Element를 찾을 수 없습니다.`
-            errorMsg += `\n|`
-            errorMsg += `\n| 루트 요소에 id 속성이 있는지 확인해주세요.`
-            errorMsg += `\n| render() { return '<div id="\${this.uid}">...</div>' }`
-            errorMsg += `\n|`
+            errorMsg += '\n|'
+            errorMsg += '\n| 루트 요소에 id 속성이 있는지 확인해주세요.'
+            errorMsg += '\n| render() { return `<div id="${this.uid}">...</div>` }'
+            errorMsg += '\n|'
             throw new Error(errorMsg)
         }
 
