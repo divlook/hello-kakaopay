@@ -54,7 +54,6 @@ i {
 
         .notice {
             text-align: center;
-
         }
 
         .input {
@@ -101,7 +100,7 @@ i {
                     margin-right: 0;
                 }
 
-                &[type="submit"] {
+                &[type='submit'] {
                     background: $color-gorse;
                     color: $color-black;
                 }
