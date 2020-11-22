@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "target": "ES2018",
+        "moduleResolution": "Node",
         "lib": ["ESNext", "DOM"],
         "sourceMap": true,
         "removeComments": true,

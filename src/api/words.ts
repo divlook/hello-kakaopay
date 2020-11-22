@@ -1,3 +1,4 @@
+import 'isomorphic-fetch'
 import { useLocalCache } from '~/libs/utils'
 
 export interface Word {

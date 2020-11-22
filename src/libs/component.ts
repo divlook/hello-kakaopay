@@ -18,17 +18,21 @@ export abstract class Component<Props = KeyValue> {
     #isHidden = false
 
     defaultProps = {}
+    /**
+     * 부모 컴포넌트
+     *
+     * parent 프로퍼티는 mount 실행 후 접근할 수 있습니다.
+     */
     parent!: Component
     childs: Childs = {}
 
     constructor() {
+        if (typeof this.render !== 'function') {
+            throw new Error('추상 멤버 render를 구현하지 않았습니다.')
+        }
+
         // uid 생성
         this.#uid = genUid()
-
-        // 등록된 자식 컴포넌트에 부모 연결
-        Object.keys(this.childs).forEach((key) => {
-            this.childs[key].parent = this
-        })
     }
 
     get uid() {
@@ -36,10 +40,11 @@ export abstract class Component<Props = KeyValue> {
     }
 
     get el() {
-        if (!this.#el) {
-            this.#el = document.getElementById(this.#uid)
+        if (this.#el) {
+            return this.#el
         }
-        return this.#el
+
+        return this.connectEl()
     }
 
     get props() {
@@ -101,6 +106,10 @@ export abstract class Component<Props = KeyValue> {
         this.#beforeUnmountCallback = cb
     }
 
+    /**
+     * Show
+     * - mount된 후 사용 가능
+     */
     show() {
         if (this.el) {
             this.el.hidden = false
@@ -108,6 +117,10 @@ export abstract class Component<Props = KeyValue> {
         }
     }
 
+    /**
+     * Hide
+     * - mount된 후 사용 가능
+     */
     hide() {
         if (this.el) {
             this.el.hidden = true
@@ -123,6 +136,35 @@ export abstract class Component<Props = KeyValue> {
         }
     }
 
+    connectEl() {
+        this.#el = document.getElementById(this.#uid)
+
+        if (this.#el) {
+            return this.#el
+        }
+
+        // prettier-ignore
+        if (this.#isMounted) {
+            let errorMsg = `#${this.#uid} Element를 찾을 수 없습니다.`
+            errorMsg += '\n|'
+            errorMsg += '\n| 루트 요소에 id 속성이 있는지 확인해주세요.'
+            errorMsg += '\n| render() { return `<div id="${this.uid}">...</div>` }'
+            errorMsg += '\n|'
+            throw new Error(errorMsg)
+        }
+
+        return null
+    }
+
+    /**
+     * 등록된 자식 컴포넌트에 부모 연결
+     */
+    connectParentToChilds() {
+        Object.keys(this.childs).forEach((key) => {
+            this.childs[key].parent = this
+        })
+    }
+
     private runCallbackWithChilds(type: 'mount' | 'unmount') {
         Object.keys(this.childs).forEach((key) => {
             const child = this.childs[key]
@@ -132,12 +174,14 @@ export abstract class Component<Props = KeyValue> {
         switch (type) {
             case 'mount':
                 this.#isMounted = true
+                this.connectEl()
+                this.connectParentToChilds()
                 this.#mountedCallback?.()
                 break
 
             case 'unmount':
                 this.#beforeUnmountCallback?.()
-                this.el?.remove()
+                this.#el?.remove()
                 this.#el = null
                 this.#props = {} as Props
                 this.#isMounted = false
