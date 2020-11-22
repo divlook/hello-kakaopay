@@ -163,7 +163,7 @@ export abstract class Component<Props = KeyValue> {
 
             case 'unmount':
                 this.#beforeUnmountCallback?.()
-                this.el?.remove()
+                this.#el?.remove()
                 this.#el = null
                 this.#props = {} as Props
                 this.#isMounted = false
