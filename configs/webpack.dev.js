@@ -7,7 +7,7 @@ require('dotenv').config()
 const config = {
     devServer: {
         publicPath: process.env.PUBLIC_PATH,
-        port: 3000,
+        port: process.env.PORT,
         hot: true,
         open: true,
         historyApiFallback: true,

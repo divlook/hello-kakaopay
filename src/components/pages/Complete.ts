@@ -1,5 +1,5 @@
 import { Component } from '~/libs/component'
-import { getGameData, removeGameData } from '~/libs/utils'
+import { getGameData, removeGameData } from '~/libs/gamedata'
 import { Button } from '~/components/ui/Button'
 import { Context } from '~/components/Router'
 

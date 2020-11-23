@@ -4,7 +4,8 @@ import { Button } from '~/components/ui/Button'
 import { Input } from '~/components/ui/Input'
 import { Context } from '~/components/Router'
 import { getWordsApi, Word } from '~/api/words'
-import { debounce, saveGameData, getGameData, timer } from '~/libs/utils'
+import { debounce, timer } from '~/libs/utils'
+import { saveGameData, getGameData } from '~/libs/gamedata'
 import * as msg from '~/libs/msg'
 
 export class Main extends Component {
@@ -132,20 +133,35 @@ export class Main extends Component {
 
             submitButton.disable()
             setMessage(msg.importingData)
-            scope.#isPlaying = true
-            scope.#words = await getWordsApi()
-            submitButton.disable(false)
-            setMessage()
 
-            scope.#result.playtime = 0
-            scope.#result.score = scope.#words.length
+            getWordsApi()
+                .then((nextWords) => {
+                    submitButton.disable(false)
 
-            resetButton.show()
-            submitButton.setText('제출')
-            input.disable(false)
-            score.setValue(scope.#result.score)
+                    if (nextWords && nextWords.length) {
+                        setMessage()
 
-            nextWord()
+                        scope.#words = nextWords
+                        scope.#isPlaying = true
+                        scope.#result.playtime = 0
+                        scope.#result.score = scope.#words.length
+
+                        resetButton.show()
+                        submitButton.setText('제출')
+                        input.disable(false)
+                        score.setValue(scope.#result.score)
+
+                        nextWord()
+                        return
+                    }
+
+                    setMessage(msg.noWords)
+                })
+                .catch((error) => {
+                    submitButton.disable(false)
+                    setMessage(error.message || msg.error)
+                    console.error(error)
+                })
         }
 
         async function resetGame() {
