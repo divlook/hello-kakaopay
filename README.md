@@ -81,7 +81,7 @@ root/
 
 ### 개발 환경
 
-#### 타겟 브라우져
+##### 타겟 브라우져
 
 | 브라우져 | 최소 버전 |
 | - | -:|
@@ -94,7 +94,7 @@ root/
 | Firefox | 81 |
 | Samsung Internet | 12.0 |
 
-#### 빌드 도구
+##### 빌드 도구
 
 - webpack
 - babel
@@ -103,16 +103,16 @@ root/
 - postcss
 - autoprefixer
 
-#### 코드 Lint 및 스타일 도구
+##### 코드 Lint 및 스타일 도구
 
 - eslint
 - prettier
 
-#### 유닛 테스트 도구
+##### 유닛 테스트 도구
 
 - jest
 
-#### 배포 도구
+##### 배포 도구
 
 - Github Action
 
@@ -120,31 +120,31 @@ root/
 
 공통으로 사용되는 코드를 분리하여 [src/libs](./src/libs)폴더에 보관하였습니다.
 
-#### Utils
+##### Utils
 
 공통으로 사용되는 유틸성 라이브러리입니다.
 
 - [src/libs/utils.ts](./src/libs/utils.ts)
 
-#### Uid
+##### Uid
 
 고유한 id를 만들기 위한 라이브러리입니다.
 
 - [src/libs/uid.ts](./src/libs/uid.ts)
 
-#### Message
+##### Message
 
 반복되는 메시지를 재사용하기 위해 메시지를 모아놓은 라이브러리입니다.
 
 - [src/libs/msg.ts](./src/libs/msg.ts)
 
-#### Gamedata
+##### Gamedata
 
 게임 데이터를 불러오고 저장하기 위한 라이브러리입니다.
 
 - [src/libs/gamedata.ts](./src/libs/gamedata.ts)
 
-#### Component
+##### Component
 
 [HTML DOM Element](https://developer.mozilla.org/ko/docs/Web/API/Element)를 `component`단위로 관리하기 위한 라이브러리입니다.
 
@@ -277,7 +277,7 @@ export class Main extends Component {
 
 위 코드와 같이 `Router` 컴포넌트를 `App` 컴포넌트의 `childs`에 등록하면 `routes`에 등록된 컴포넌트는 `render(ctx: Context)` 프로퍼티의 첫번째 인자로 라우터의 Context를 전달 받아 페이지 이동을 할 수 있게 구현하였습니다.
 
-#### History
+##### History
 
 `Router` 컴포넌트는 mount될 때 `History API`를 사용하여 현재 라우트 정보를 `history.state`와 내부 property에 추가합니다.
 
@@ -287,19 +287,19 @@ export class Main extends Component {
 
 ### UI 컴포넌트
 
-#### Button
+##### Button
 
 `<button>` Element의 type, disabled, hidden 속성을 변경할 수 있고 onClick 이벤트를 등록할 수 있습니다.
 
 - [src/components/ui/Button.ts](./src/components/ui/Button.ts)
 
-#### Input
+##### Input
 
 `<input>` Element의 type, placeholder, disabled 속성을 변경할 수 있고 onInput, onEnter 이벤트를 등록할 수 있습니다.
 
 - [src/components/ui/Input.ts](./src/components/ui/Input.ts)
 
-#### Text
+##### Text
 
 텍스트를 입력하기 위한 컴포넌트입니다.
 
@@ -309,7 +309,7 @@ export class Main extends Component {
 
 ### 화면구성
 
-#### 게임 화면
+##### 게임 화면
 
 게임을 시작하고 단어를 입력할 수 있는 페이지입니다.
 
@@ -320,7 +320,7 @@ export class Main extends Component {
 
 <img src="./docs/img/1.png" width="48%">
 
-#### 완료 화면
+##### 완료 화면
 
 게임 결과를 확인할 수 있는 페이지입니다.
 
