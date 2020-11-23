@@ -1,5 +1,6 @@
 import 'isomorphic-fetch'
 import { useLocalCache } from '~/libs/utils'
+import * as msg from '~/libs/msg'
 
 export interface Word {
     second: number
@@ -19,19 +20,12 @@ export const getWordsApi = async () => {
     return fetch(apiUrl)
         .then((response) => {
             if (!response.ok) {
-                throw new Error('서버 에러가 발생하였습니다.')
+                throw new Error(msg.error)
             }
             return response.json()
         })
         .then((data: Word[]) => {
             cache.set(data)
             return data
-        })
-        .catch((error) => {
-            if (error.message) {
-                alert(error.message)
-            }
-            console.error(error)
-            return [] as Word[]
         })
 }

@@ -1,4 +1,4 @@
-import { apiUrl, getWordsApi } from '~/api/words'
+import { apiUrl, getWordsApi, Word } from '~/api/words'
 
 describe('API to get words', () => {
     describe('apiUrl', () => {
@@ -12,14 +12,29 @@ describe('API to get words', () => {
     })
 
     describe('getWordsApi', () => {
-        test('올바른 데이터가 반환됩니다.', async () => {
-            const words = await getWordsApi()
-            expect(words).toBeTruthy()
+        test('API 요청이 성공하면 올바른 데이터가 반환됩니다.', async () => {
+            let words: Word[]
+
+            try {
+                words = await getWordsApi()
+                expect(words).toBeTruthy()
+            } catch {
+                // @ts-expect-error
+                expect(words).toBeFalsy()
+            }
         })
 
-        test('데이터가 배열입니다.', async () => {
-            const words = await getWordsApi()
-            expect(words).toBeInstanceOf(Array)
+        test('데이터는 배열입니다.', async () => {
+            let words: Word[] = []
+
+            try {
+                words = await getWordsApi()
+            } catch {
+                expect(words).toEqual([])
+            } finally {
+                expect(words).toBeInstanceOf(Array)
+                expect(words).toBeTruthy()
+            }
         })
     })
 })
