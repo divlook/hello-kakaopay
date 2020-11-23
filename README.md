@@ -177,7 +177,7 @@ index 페이지는 [src/views/index.ejs](./src/views/index.ejs)를 템플릿으�
 <div id="app"></div>
 ```
 
-아래 코드는 [src/index.ts](./src/index.ts)에서 발췌하였습니다.
+> 아래 코드는 [src/index.ts](./src/index.ts)에서 발췌하였습니다.
 
 ```ts
 import { App } from '~/components/App'
