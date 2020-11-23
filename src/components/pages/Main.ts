@@ -4,7 +4,8 @@ import { Button } from '~/components/ui/Button'
 import { Input } from '~/components/ui/Input'
 import { Context } from '~/components/Router'
 import { getWordsApi, Word } from '~/api/words'
-import { debounce, saveGameData, getGameData, timer } from '~/libs/utils'
+import { debounce, timer } from '~/libs/utils'
+import { saveGameData, getGameData } from '~/libs/gamedata'
 import * as msg from '~/libs/msg'
 
 export class Main extends Component {
